@@ -20,19 +20,14 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
-    private $Category;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Program::class, mappedBy="category")
-     */
-    private $programs;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Program::class, mappedBy="category")
+     */
+    private $programs;
 
     public function __construct()
     {
@@ -44,14 +39,14 @@ class Category
         return $this->id;
     }
 
-    public function getCategory(): ?string
+    public function getName(): ?string
     {
-        return $this->Category;
+        return $this->name;
     }
 
-    public function setCategory(?string $Category): self
+    public function setName(string $name): self
     {
-        $this->Category = $Category;
+        $this->name = $name;
 
         return $this;
     }
@@ -68,7 +63,7 @@ class Category
     {
         if (!$this->programs->contains($program)) {
             $this->programs[] = $program;
-            $program->setCategory($this);
+            $program->addCategory($this);
         }
 
         return $this;
@@ -77,23 +72,8 @@ class Category
     public function removeProgram(Program $program): self
     {
         if ($this->programs->removeElement($program)) {
-            // set the owning side to null (unless already changed)
-            if ($program->getCategory() === $this) {
-                $program->setCategory(null);
-            }
+            $program->removeCategory($this);
         }
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
 
         return $this;
     }

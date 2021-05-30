@@ -6,23 +6,24 @@
 <div class="media">
   <div class="media-body">
     <h1 class="mt-0">{{ program.title }}</h1>
-    <p>Synopsis : {{ program.summary }}</p>
+    <p>{{ program.summary }}</p>
     <img src="{{ program.poster }}" width="300" alt="{{ program.title }}">
     <p>Catégorie : {{ program.category.name }}</p>
+    <h2>{{ seasons.description }} </h2>
   </div>
 </div>
 
 
-<h1>Toutes les saisons : </h1>
-    {% for season in seasons %}
+<h2>Listes épisodes: </h2>
+    {% for episode in episodes %}
         <div>
-            <h1>Saison {{ season.number }} - {{ season.year }}</h1>
-            <a href="{{ path("program_season_show", { programId: program.id , seasonId: season.id }) }}">Voir les saisons</a>
+            <h2>Episode {{episode.number}} - {{ episode.title }} </h2>
         </div>
     {% else %}
-        Aucune série trouvée.
+        Aucune série trouvée.</br>
     {% endfor %}
 
+<a href="{{ path('program_show', { id: program.id }) }}"> Retour à la liste des saisons</a></br>
 
 <a href="{{ path('program_index') }}"> Retour à la liste des programmes</a>
 
