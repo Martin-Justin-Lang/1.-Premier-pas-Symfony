@@ -35,18 +35,17 @@ class Season
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="Season")
-     */
-    private $program;
-
-    /**
      * @ORM\OneToMany(targetEntity=Episode::class, mappedBy="season")
      */
     private $Episode;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="seasons")
+     */
+    private $program;
+
     public function __construct()
     {
-        $this->programs = new ArrayCollection();
         $this->Episode = new ArrayCollection();
     }
 
@@ -55,17 +54,6 @@ class Season
         return $this->id;
     }
 
-    public function getProgramId(): ?int
-    {
-        return $this->program_id;
-    }
-
-    public function setProgramId(int $program_id): self
-    {
-        $this->program_id = $program_id;
-
-        return $this;
-    }
 
     public function getNumber(): ?int
     {
@@ -103,44 +91,6 @@ class Season
         return $this;
     }
 
-    /**
-     * @return Collection|Program[]
-     */
-    public function getPrograms(): Collection
-    {
-        return $this->programs;
-    }
-
-    public function addProgram(Program $program): self
-    {
-        if (!$this->programs->contains($program)) {
-            $this->programs[] = $program;
-            $program->addProgramId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProgram(Program $program): self
-    {
-        if ($this->programs->removeElement($program)) {
-            $program->removeProgramId($this);
-        }
-
-        return $this;
-    }
-
-    public function getProgram(): ?Program
-    {
-        return $this->program;
-    }
-
-    public function setProgram(?Program $program): self
-    {
-        $this->program = $program;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Episode[]
@@ -168,6 +118,18 @@ class Season
                 $episode->setSeason(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProgram(): ?Program
+    {
+        return $this->program;
+    }
+
+    public function setProgram(?Program $program): self
+    {
+        $this->program = $program;
 
         return $this;
     }

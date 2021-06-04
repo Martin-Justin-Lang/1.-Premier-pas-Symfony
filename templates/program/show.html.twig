@@ -14,7 +14,7 @@
 
 
 <h1>Toutes les saisons : </h1>
-    {% for season in seasons %}
+    {% for season in program.seasons %}
         <div>
             <h1>Saison {{ season.number }} - {{ season.year }}</h1>
             <a href="{{ path("program_season_show", { program: program.id , season: season.id }) }}">Voir les saisons</a>
