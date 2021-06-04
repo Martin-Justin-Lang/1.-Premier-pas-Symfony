@@ -6,6 +6,9 @@ use App\Repository\ProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ProgramRepository::class)
@@ -36,22 +39,20 @@ class Program
     private $poster;
 
     /**
+     * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program")
+     */
+    private $seasons;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="programs")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $category;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program")
-     */
-    private $Season;
-
     public function __construct()
     {
-        $this->category = new ArrayCollection();
-        $this->program_id = new ArrayCollection();
-        $this->Season = new ArrayCollection();
+        $this->seasons = new ArrayCollection();
     }
+
 
 
     public function getId(): ?int
@@ -96,63 +97,19 @@ class Program
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function addCategory(Category $category): self
-    {
-        if (!$this->category->contains($category)) {
-            $this->category[] = $category;
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        $this->category->removeElement($category);
-
-        return $this;
-    }
 
     /**
      * @return Collection|Season[]
      */
-    public function getProgramId(): Collection
+    public function getSeasons(): Collection
     {
-        return $this->program_id;
-    }
-
-    public function addProgramId(Season $programId): self
-    {
-        if (!$this->program_id->contains($programId)) {
-            $this->program_id[] = $programId;
-        }
-
-        return $this;
-    }
-
-    public function removeProgramId(Season $programId): self
-    {
-        $this->program_id->removeElement($programId);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Season[]
-     */
-    public function getSeason(): Collection
-    {
-        return $this->Season;
+        return $this->seasons;
     }
 
     public function addSeason(Season $season): self
     {
-        if (!$this->Season->contains($season)) {
-            $this->Season[] = $season;
+        if (!$this->seasons->contains($season)) {
+            $this->seasons[] = $season;
             $season->setProgram($this);
         }
 
@@ -161,7 +118,7 @@ class Program
 
     public function removeSeason(Season $season): self
     {
-        if ($this->Season->removeElement($season)) {
+        if ($this->seasons->removeElement($season)) {
             // set the owning side to null (unless already changed)
             if ($season->getProgram() === $this) {
                 $season->setProgram(null);
@@ -171,4 +128,15 @@ class Program
         return $this;
     }
 
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
 }

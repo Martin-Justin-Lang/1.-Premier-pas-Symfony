@@ -25,7 +25,7 @@ class Category
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Program::class, mappedBy="category")
+     * @ORM\OneToMany(targetEntity=Program::class, mappedBy="category")
      */
     private $programs;
 
@@ -33,7 +33,6 @@ class Category
     {
         $this->programs = new ArrayCollection();
     }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -63,7 +62,7 @@ class Category
     {
         if (!$this->programs->contains($program)) {
             $this->programs[] = $program;
-            $program->addCategory($this);
+            $program->setCategory($this);
         }
 
         return $this;
@@ -72,9 +71,13 @@ class Category
     public function removeProgram(Program $program): self
     {
         if ($this->programs->removeElement($program)) {
-            $program->removeCategory($this);
+            // set the owning side to null (unless already changed)
+            if ($program->getCategory() === $this) {
+                $program->setCategory(null);
+            }
         }
 
         return $this;
     }
+
 }
