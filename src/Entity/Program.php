@@ -12,6 +12,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ProgramRepository::class)
+ * @UniqueEntity( 
+ *     "title",
+ *     message="Ce titre est déjà pris.")
  */
 class Program
 {
@@ -24,6 +27,8 @@ class Program
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="ne me laisse pas tout vide")
+     * @Assert\Length(max="255", maxMessage="La catégorie saisie {{ value }} est trop longue, elle ne devrait pas dépasser {{ limit }} caractères")
      */
 
     private $title;
@@ -34,6 +39,7 @@ class Program
     private $summary;
 
     /**
+     * @Assert\NotBlank(message="ne me laisse pas tout vide")
      * @ORM\Column(type="string", length=255)
      */
     private $poster;
