@@ -20,8 +20,17 @@
             <a href="{{ path("program_season_show", { program: program.id , season: season.id }) }}">Voir les saisons</a>
         </div>
     {% else %}
-        Aucune série trouvée.
+        Aucune série trouvée.</br>
     {% endfor %}
+
+    <strong>Acteurs :</strong>
+<ul>
+    {% for actor in program.actors %}
+        <li>{{ actor.name }} </li>
+    {% else %}
+        <li>Aucun acteur pour cette série</li>
+    {% endfor %}
+</ul>
 
 
 <a href="{{ path('program_index') }}"> Retour à la liste des programmes</a>
