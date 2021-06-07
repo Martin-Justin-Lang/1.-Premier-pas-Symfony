@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Actor;
 use App\Entity\Program;
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
@@ -15,8 +16,13 @@ class ProgramType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-
+        $builder->add('actors', EntityType::class, [
+            'class' => Actor::class,
+            'choice_label' => 'firstname',
+            'multiple' => true,
+            'expanded' => true,
+            'by_reference' => false,
+        ])
             ->add('title', TextType::class)
             ->add('summary', TextType::class)
             ->add('poster', TextType::class)

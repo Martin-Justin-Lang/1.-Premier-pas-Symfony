@@ -26,7 +26,7 @@
     <strong>Acteurs :</strong>
 <ul>
     {% for actor in program.actors %}
-        <li>{{ actor.name }} </li>
+        <li>{{ actor.firstname }} {{ actor.lastname }} </li></br>
     {% else %}
         <li>Aucun acteur pour cette série</li>
     {% endfor %}
