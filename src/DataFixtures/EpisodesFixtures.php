@@ -2,40 +2,46 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Episodes;
-
+use App\Entity\Episode;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class EpisodesFixtures extends Fixture
+
+class EpisodesFixtures extends Fixture implements DependentFixtureInterface
 { 
     const EPISODES = [
-    'Seven Thirty-Seven',
-    'Grilled',
-    'Bit by a Dead Bee',
-    'Down',
-    'Breakage',
-    'Peekaboo',
-    'Negro y Azul',
-    'Better Call Saul',
-    '4 Days Out',
-    'Over',
-    'Mandala',
-    'Phoenix',
-    'ABQ'
+    ['Seven Thirty-Seven',1, 'test'],
+    ['Grilled', 2, 'test'],
+    ['Bit by a Dead Bee',3, 'test'],
+    ['Down', 4, 'test'],
+   
 
 ];
 
     public function load(ObjectManager $manager)
     {
-        foreach(self::EPISODES as $key => $episodesName) {
-        $episodes = new Episodes();
-        $episodes->setName($episodesName);
-        $manager->persist($episodes);
+        foreach(self::EPISODES as $key => $values) {
+            $episodes = new Episode();
+            $episodes->setTitle($values[0]);
+            $episodes->setNumber($values[1]);
+            $episodes->setSynopsis($values[2]);
+            $episodes->setSeason($this->getReference('seasons_'.rand(0,2)));
+            $manager->persist($episodes);
+
+            $this->addReference('episode_'.$key, $episodes);
         }
         
         $manager->flush();
     }
+
+    public function getDependencies()
+    {
+        return array(
+            SeasonsFixtures::class
+        );
+    }
+
 }
 
 

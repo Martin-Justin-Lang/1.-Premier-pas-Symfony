@@ -44,9 +44,15 @@ class Season
      */
     private $program;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Episode::class, mappedBy="season")
+     */
+    private $episodes;
+
     public function __construct()
     {
         $this->Episode = new ArrayCollection();
+        $this->episodes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,5 +138,13 @@ class Season
         $this->program = $program;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Episode[]
+     */
+    public function getEpisodes(): Collection
+    {
+        return $this->episodes;
     }
 }

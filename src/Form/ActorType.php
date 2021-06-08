@@ -13,8 +13,7 @@ class ActorType extends AbstractType
     {
         $builder
             ->add('firstname')
-            ->add('lastname')
-            ->add('programs')
+            ->add('name')
         ;
     }
 

@@ -5,24 +5,26 @@ namespace App\DataFixtures;
 use App\Entity\Season;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class SeasonsFixtures extends Fixture
+class SeasonsFixtures extends Fixture implements DependentFixtureInterface
 { 
     const SAISONS = [
-        1 => [2008, 'Season 1'],
-        2 => [2009, 'Season 2'],
-        3 => [2010, 'Season 3'],
+        [1, 2008, 'Season 1'],
+        [2, 2009, 'Season 2'],
+        [3, 2010, 'Season 3'],
 
 ];
     public function load(ObjectManager $manager)
     {
         foreach(self::SAISONS as $key => $values) {
-            $episodes = new Season();
-            $episodes->setNumber($key);
-            $episodes->setYear(intval($values[0]));
-            $episodes->setDescription($values[1]);
-            $episodes->setProgram($this->getReference('program '.rand(1,3)));
-            $manager->persist($episodes);
+            $season = new Season();
+            $season->setNumber($values[0]);
+            $season->setYear(intval($values[1]));
+            $season->setDescription($values[2]);
+            $season->setProgram($this->getReference('program_'.rand(1,3)));
+            $manager->persist($season);
+            $this->addReference('seasons_'.$key, $season);
         }
         
         $manager->flush();

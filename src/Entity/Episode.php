@@ -19,10 +19,6 @@ class Episode
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $season_id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,26 +36,16 @@ class Episode
     private $synopsis;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="Episode")
+     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="episodes")
      */
     private $season;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSeasonId(): ?int
-    {
-        return $this->season_id;
-    }
-
-    public function setSeasonId(int $season_id): self
-    {
-        $this->season_id = $season_id;
-
-        return $this;
-    }
 
     public function getTitle(): ?string
     {
@@ -108,4 +94,5 @@ class Episode
 
         return $this;
     }
+
 }
