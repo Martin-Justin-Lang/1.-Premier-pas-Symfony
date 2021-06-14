@@ -17,7 +17,7 @@
     {% for season in program.seasons %}
         <div>
             <h1>Saison {{ season.number }} - {{ season.year }}</h1>
-            <a href="{{ path("program_season_show", { program: program.id , season: season.id }) }}">Voir les saisons</a>
+            <a href="{{ path('program_season_show', { slug: program.slug , season_slug: season.slug }) }}">Voir les saisons</a>
         </div>
     {% else %}
         Aucune série trouvée.</br>
@@ -26,7 +26,7 @@
     <strong>Acteurs :</strong>
 <ul>
     {% for actor in program.actors %}
-        <li>{{ actor.firstname }} {{ actor.lastname }} </li></br>
+        <li>{{ actor.name }} </li></br>
     {% else %}
         <li>Aucun acteur pour cette série</li>
     {% endfor %}

@@ -49,7 +49,7 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="episode_show", methods={"GET"})
+     * @Route("/{slug}", name="episode_show", methods={"GET"})
      */
     public function show(Episode $episode): Response
     {

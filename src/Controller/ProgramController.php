@@ -9,6 +9,7 @@ use App\Form\ProgramType;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 /**
@@ -40,6 +41,9 @@ Class ProgramController extends AbstractController
      */
     public function new(Request $request) : Response
     {
+        $slug = $slugify->generate($program->getTitle());
+        $program->setSlug($slug);
+
         // Create a new program Object
         $program = new Program();
         // Create the associated Form
@@ -66,7 +70,7 @@ Class ProgramController extends AbstractController
      * Getting a program by id
      * 
      * @return Response
-     * @Route("/show/{id}", requirements={"id"="\d+"}, methods={"GET"}, name="show")
+     * @Route("/show/{slug}", methods={"GET"}, name="show")
     */
     public function show(Program $program) : Response
     {
@@ -78,7 +82,8 @@ Class ProgramController extends AbstractController
 
 
  /**
-     * @Route("/{program}/season/{season}", name="season_show")
+     * @Route("/{slug}/season/{season_slug}", name="season_show")
+     * @ParamConverter("season", options={"mapping": {"season_slug": "slug"}})
      */
     public function showSeason(Program $program, Season $season): Response
     {
@@ -90,7 +95,11 @@ Class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{program}/seasons/{season}/episodes/{episode}", name="episode_show")
+     * @Route("/{slug}/seasons/{season_slug}/episodes/{episode_slug}", name="episode_show")
+     * @ParamConverter("season", options={"mapping": {"season_slug": "slug"}})
+     * @ParamConverter("episode", options={"mapping": {"episode_slug": "slug"}})
+
+
      */
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {

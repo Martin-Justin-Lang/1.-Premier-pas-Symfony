@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Program;
+use App\Service\Slugify;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -17,6 +18,13 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         ["Stranger Things","When a young boy disappears, his mother, a police chief and his friends must confront terrifying supernatural forces in order to get him back","https://m.media-amazon.com/images/M/MV5BN2ZmYjg1YmItNWQ4OC00YWM0LWE0ZDktYThjOTZiZjhhN2Q2XkEyXkFqcGdeQXVyNjgxNTQ3Mjk@._V1_SY264_CR0,0,178,264_AL_.jpg"],
     ];
 
+    private $slugify;
+
+    public function __construct(Slugify $slugifyService)
+    {
+        $this->slugify = $slugifyService;
+    }
+
     public function load(ObjectManager $manager)
     {
         foreach(self::PROGRAMS as $key => $values) {
@@ -26,6 +34,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $program->setPoster($values[2]);
         $program->addActor($this->getReference('actor_'.rand(0,4)));
         $program->setCategory($this->getReference('category_'.rand(0,4)));
+        $program->setSlug($this->slugify->generate($values[0]));
         $manager->persist($program);
         $this->addReference('program_'.$key, $program);
         }
