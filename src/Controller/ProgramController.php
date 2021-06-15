@@ -10,6 +10,9 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use App\Service\Slugify;
 
 
 /**
@@ -39,10 +42,8 @@ Class ProgramController extends AbstractController
      *
      * @Route("/newprogram", name="newprogram")
      */
-    public function new(Request $request) : Response
+    public function new(Request $request,Slugify $slugifyService, MailerInterface $mailer) : Response
     {
-        $slug = $slugify->generate($program->getTitle());
-        $program->setSlug($slug);
 
         // Create a new program Object
         $program = new Program();
@@ -54,11 +55,25 @@ Class ProgramController extends AbstractController
         if ($form->isSubmitted()&& $form->isValid()) {
             // Deal with the submitted data
             // Get the Entity Manager
+            $slug = $slugifyService->generate($program->getTitle());
+            $program->setSlug($slug);
+            
             $entityManager = $this->getDoctrine()->getManager();
             // Persist program Object
             $entityManager->persist($program);
             // Flush the persisted object
             $entityManager->flush();
+
+            $email = (new Email())
+            ->from('your_email@example.com')
+            ->to('your_email@example.com')
+            ->subject('Une nouvelle série vient d\'être publiée !')
+            ->html('<p>Une nouvelle série vient d\'être publiée sur Wild Séries !</p>');
+
+            $mailer->send($email);
+            $this->getParameter('mailer_from');
+
+
             // Finally redirect to categories list
             return $this->redirectToRoute('program_index');
         }
@@ -98,8 +113,6 @@ Class ProgramController extends AbstractController
      * @Route("/{slug}/seasons/{season_slug}/episodes/{episode_slug}", name="episode_show")
      * @ParamConverter("season", options={"mapping": {"season_slug": "slug"}})
      * @ParamConverter("episode", options={"mapping": {"episode_slug": "slug"}})
-
-
      */
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
