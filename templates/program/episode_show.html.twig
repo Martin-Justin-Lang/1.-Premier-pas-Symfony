@@ -19,6 +19,20 @@
             <p>Synopsis : {{episode.synopsis}} </p>
         </div>
 
+        <h2>Commentaires</h2>
+            {% for comment in episode.comments %}
+            
+                <p>{{ comment.comment }}</p>
+                <p>{{ comment.rate }}</p>
+            
+            {% endfor %}
+
+ {% if app.user %}
+    {{ include('comment/_form.html.twig') }}
+ {% else %}
+Vous ne pouvez pas voir les commentaires, car vous n'êtes pas connecté.. Tocard.. </br>
+ <a href="http://localhost:8000/login">Connectez-vous</a></br>
+ {% endif %}
 
 <a href="{{ path("program_season_show", { slug: program.slug , season_slug: season.slug }) }}">Retour à la saisons</a></br>
 

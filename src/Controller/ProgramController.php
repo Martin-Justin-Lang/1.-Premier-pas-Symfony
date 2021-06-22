@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ProgramType;
+use App\Form\CommentType;
+use App\Entity\Comment;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
@@ -13,7 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Service\Slugify;
-
 
 /**
 * @Route("/programs", name="program_")
@@ -114,13 +115,31 @@ Class ProgramController extends AbstractController
      * @ParamConverter("season", options={"mapping": {"season_slug": "slug"}})
      * @ParamConverter("episode", options={"mapping": {"episode_slug": "slug"}})
      */
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    public function showEpisode(Request $request,Slugify $slugifyService, Program $program, Season $season, Episode $episode): Response
     {
+        $comment = new Comment() ; 
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()&& $form->isValid()) {
+            $slug = $slugifyService->generate($comment->getComment());
+            $comment->setSlug($slug);
+            $entityManager = $this->getDoctrine()->getManager();
+            $comment->setEpisode($episode);
+            $comment->setAuthor($this->getUser());
+            // Persist program Object
+            $entityManager->persist($comment);
+            // Flush the persisted object
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('comment_index');
+        }
+
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
-            'episode' => $episode
+            'episode' => $episode,
+            'form' => $form->createView()
             ]);
-
-}
+        
+    }
 }

@@ -24,5 +24,19 @@
       <li class="nav-item active">
         <a class="nav-link" href="{{ path ('episode_index')}}">Episodes</a>
       </li>
+
+       <li class="nav-item active">
+        <a class="nav-link" href="{{ path ('comment_index')}}">Commentaires</a>
+      </li>
+ {% if app.user %}
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion</a>
+      </li>
+ {% else %}
+ <li class="nav-item active">
+        <a class="nav-link" href="http://localhost:8000/login">Connexion</a>
+      </li>
+ {% endif %}
+      
   </div>
 </nav>
